@@ -8,7 +8,7 @@ Small extension containing various scripts to augment SD WebUI Forge.
   - **List all models** (shown in the terminal)
   - **Unload models**
 
-- `javascript/drag_drop_tabs.js` - Adds drag-over (drag & drop) handling so that when you drag a file over a tab button in the UI the tab will be opened (emulates a click on hover while dragging files). This makes it easier to drag an image onto the UI and drop it into the right tab, e.g. being in txt2img tab but wanting to drag an image into PNG Info.
+- `javascript/drag_drop_tabs.js` - Adds **drag-over (drag & drop)** handling so that when you drag a file over a tab button in the UI the tab will be opened (emulates a click on hover while dragging files). This makes it easier to drag an image onto the UI and drop it into the right tab, e.g. being in txt2img tab but wanting to drag an image into PNG Info.
 
 ## SD WebUI Installation
 
