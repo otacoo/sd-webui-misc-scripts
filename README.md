@@ -4,6 +4,8 @@ Small extension containing various scripts to augment SD WebUI Forge.
 
 ## Scripts
 
+- `scripts/enqueue_prompts.py` & `javascript/enqueue_prompts.js` - Adds an **Enqueue** button next to the other generation buttons. When pressed it will snapshot the prompt and parameters to enqueue a generation job after the current job finishes. The button will show how many queued jobs are in queue.
+
 - `scripts/unload_models.py` & `javascript/unload_models.js` - injects two buttons to the bottom footer:
   - **List all models** (shown in the terminal)
   - **Unload models**
@@ -19,9 +21,9 @@ Small extension containing various scripts to augment SD WebUI Forge.
 
 ## Notes
 
-- Tested & working on [SD WebUI Forge Classic](https://github.com/Haoming02/sd-webui-forge-classic)
+- Only tested & working on [SD WebUI Forge Classic](https://github.com/Haoming02/sd-webui-forge-classic)
 
 ## License
 
-MIT
+[MIT](/LICENSE)
 
