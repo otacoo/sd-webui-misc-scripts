@@ -1,7 +1,9 @@
 (function () {
     function addUnloadButton() {
+        if (typeof opts !== 'undefined' && opts.misc_enable_unload_models === false) return true;
+
         const root = typeof gradioApp === 'function' ? gradioApp() : document;
-        
+
         const links = Array.from(root.querySelectorAll('#footer a'));
         const reloadLink = links.find(a => a.textContent.trim() === 'Reload UI');
         if (!reloadLink) return false;

@@ -2,6 +2,18 @@
     var isProcessing = false;
     var enqueueButtons = [];
 
+    if (typeof opts !== 'undefined' && opts.misc_enable_enqueue_prompt === false) return;
+
+    function opt(name, def) {
+        return (typeof opts !== 'undefined' && opts[name] !== undefined) ? opts[name] : def;
+    }
+
+    function orderFor(placement) {
+        return placement === 'middle' ? ['interrupt', 'enqueue', 'skip'] :
+               placement === 'right'  ? ['interrupt', 'skip', 'enqueue'] :
+                                        ['enqueue', 'interrupt', 'skip'];
+    }
+
     function updateAllButtons(count) {
         for (var i = 0; i < enqueueButtons.length; i++) {
             enqueueButtons[i].textContent = count > 0 ? 'Enqueue (' + count + ')' : 'Enqueue';
@@ -198,7 +210,12 @@
         btn.className = 'lg secondary gradio-button svelte-cmf5ev';
         btn.title = 'Queue current prompt to run after the current generation finishes';
         btn.textContent = 'Enqueue';
-        btn.style.cssText = 'position:absolute;left:0;width:33.33%;height:100%;background:#b4c0cc;border-radius:0.5rem 0 0 0.5rem;display:none;transition:var(--button-transition);box-shadow:var(--button-shadow);';
+
+        var p = opt('misc_enqueue_placement', 'left');
+        var il = p === 'left' ? '0' : p === 'middle' ? '33.33%' : '66.66%';
+        var ir = p === 'left' ? '0.5rem 0 0 0.5rem' :
+                 p === 'right' ? '0 0.5rem 0.5rem 0' : '0';
+        btn.style.cssText = 'position:absolute;left:' + il + ';width:33.33%;height:100%;background:#b4c0cc;border-radius:' + ir + ';display:none;transition:var(--button-transition);box-shadow:var(--button-shadow);';
 
         btn.addEventListener('click', function (e) {
             e.preventDefault();
@@ -214,7 +231,9 @@
             .then(function (data) {
                 if (data.status === 'queued') {
                     btn.textContent = 'Queued!';
-                    notifySDWebUI('Prompt queued.', 'info');
+                    if (opt('misc_enqueue_notifications', true)) {
+                        notifySDWebUI('Prompt queued.', 'info');
+                    }
                     setTimeout(function () {
                         updateAllButtons(data.queue_size);
                     }, 1500);
@@ -236,13 +255,28 @@
 
             if (isGen) {
                 btn.style.display = 'block';
-                var middleBtn = interruptingVisible ? interruptingBtn : interruptBtn;
-                middleBtn.style.left = '33.33%';
-                middleBtn.style.width = skipVisible ? '33.33%' : '66.66%';
-                middleBtn.style.borderRadius = skipVisible ? '0' : '0 0.5rem 0.5rem 0';
-                if (skipVisible) {
-                    skipBtn.style.left = '66.66%';
-                    skipBtn.style.width = '33.33%';
+
+                var actualInterrupt = interruptingVisible ? interruptingBtn : interruptBtn;
+                var slotMap = {};
+                slotMap.enqueue = btn;
+                slotMap.interrupt = actualInterrupt;
+                slotMap.skip = skipVisible ? skipBtn : null;
+
+                var slots = orderFor(opt('misc_enqueue_placement', 'left')).slice();
+                if (!skipVisible) {
+                    slots = slots.filter(function (id) { return id !== 'skip'; });
+                }
+                var count = slots.length;
+
+                var w = (100 / count).toFixed(2);
+                for (var i = 0; i < slots.length; i++) {
+                    var id = slots[i];
+                    var el = slotMap[id];
+                    if (!el) continue;
+                    el.style.left = (i * parseFloat(w)).toFixed(2) + '%';
+                    el.style.width = w + '%';
+                    el.style.borderRadius = i === 0 ? '0.5rem 0 0 0.5rem' :
+                                            i === slots.length - 1 ? '0 0.5rem 0.5rem 0' : '0';
                 }
             } else {
                 btn.style.display = 'none';
