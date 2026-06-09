@@ -1,16 +1,16 @@
-# sd-webui-unload-models
+# sd-webui-misc-scripts
 
 Small extension containing various scripts to augment SD WebUI Forge.
 
 ## Scripts
 
-- `scripts/enqueue_prompts.py` & `javascript/enqueue_prompts.js` - Adds an **Enqueue** button next to the other generation buttons. When pressed it will snapshot the prompt and parameters to enqueue a generation job after the current job finishes. The button will show how many queued jobs are in queue.
+- **ENQUEUE BUTTON** - Adds an **Enqueue** button next to the other generation buttons. When pressed it will snapshot the prompt and parameters to enqueue a generation job after the current job finishes. The button will show how many queued jobs are in queue.
 
-- `scripts/unload_models.py` & `javascript/unload_models.js` - injects two buttons to the bottom footer:
+- **UNLOAD MODELS** & **LIST MODELS** - injects two buttons to the bottom footer:
   - **List all models** (shown in the terminal)
   - **Unload models**
 
-- `javascript/drag_drop_tabs.js` - Adds **drag-over (drag & drop)** handling so that when you drag a file over a tab button in the UI the tab will be opened (emulates a click on hover while dragging files). This makes it easier to drag an image onto the UI and drop it into the right tab, e.g. being in txt2img tab but wanting to drag an image into PNG Info.
+- **IMAGE DRAG & DROP** - Adds **drag-over (drag & drop)** handling so that when you drag a file over a tab button in the UI the tab will be opened (emulates a click on hover while dragging files). This makes it easier to drag an image onto the UI and drop it into the right tab, e.g. being in txt2img tab but wanting to drag an image into PNG Info.
 
 ## SD WebUI Installation
 
