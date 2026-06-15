@@ -23,13 +23,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import os
+import time
 import gradio as gr
-import numpy as np
 from PIL import Image
 from modules import scripts_postprocessing, shared
 
 _remover = None
 _import_error = None
+_assign_patched = False
 
 try:
     from transparent_background import Remover
@@ -38,11 +40,21 @@ except ModuleNotFoundError as _e:
     Remover = None
 
 
-def _checkerboard(size, tile=16):
-    w, h = size
-    pattern = (np.arange(w)[np.newaxis, :] // tile + np.arange(h)[:, np.newaxis] // tile) % 2
-    look = np.array([(200, 200, 200), (255, 255, 255)], dtype=np.uint8)
-    return Image.fromarray(look[pattern])
+def _patch_assign():
+    global _assign_patched
+    if _assign_patched:
+        return
+    orig = shared.state.__class__.assign_current_image
+
+    def _patched(self, image):
+        if image is not None and image.mode == "RGBA":
+            bg = Image.new("RGB", image.size, (255, 255, 255))
+            bg.paste(image, (0, 0), image)
+            image = bg
+        return orig(self, image)
+
+    shared.state.__class__.assign_current_image = _patched
+    _assign_patched = True
 
 
 class ScriptPostprocessingTransparentBackground(scripts_postprocessing.ScriptPostprocessing):
@@ -81,14 +93,23 @@ class ScriptPostprocessingTransparentBackground(scripts_postprocessing.ScriptPos
 
         global _remover
         if _remover is None:
+            _patch_assign()
             _remover = Remover()
 
         rgb = pp.image.convert("RGB")
         mask = _remover.process(rgb, type="map", threshold=threshold).convert("L")
 
-        cb = _checkerboard(rgb.size)
-        cb.paste(rgb, (0, 0), mask=mask)
-        pp.image = cb
+        rgba = Image.merge("RGBA", (*rgb.split(), mask))
+
+        fmt = (shared.opts.samples_format or "png").lower()
+        if fmt == "webp":
+            outpath = shared.opts.outdir_samples or shared.opts.outdir_extras_samples or os.path.join(shared.data_path, "outputs", "extras")
+            os.makedirs(outpath, exist_ok=True)
+            fn = f"transparent_{int(time.time())}.webp"
+            rgba.save(os.path.join(outpath, fn), format="WEBP", lossless=True)
+            print(f"Transparent Background: saved transparent WEBP -> {fn}")
+
+        pp.image = rgba
 
         if output_mask:
             pp.extra_images.append(mask.convert("RGB"))
