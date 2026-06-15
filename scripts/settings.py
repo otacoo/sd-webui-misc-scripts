@@ -13,7 +13,7 @@ def on_ui_settings():
             gr.Checkbox,
             {"interactive": True},
             section=section,
-        ).info("Adds buttons to unload models and list models in the footer."),
+        ).info("Adds buttons to unload and list models in the footer."),
     )
 
     shared.opts.add_option(
@@ -24,7 +24,7 @@ def on_ui_settings():
             gr.Checkbox,
             {"interactive": True},
             section=section,
-        ).info("Auto-switches tabs when dragging files over them."),
+        ).info("Open a tab when dragging a file over it."),
     )
 
     shared.opts.add_option(
@@ -47,6 +47,17 @@ def on_ui_settings():
             {"interactive": True},
             section=section,
         ).info("Show a notification when queuing a prompt."),
+    )
+
+    shared.opts.add_option(
+        "misc_enable_transparent_background",
+        shared.OptionInfo(
+            True,
+            "Enable Transparent Background in Extras tab",
+            gr.Checkbox,
+            {"interactive": True},
+            section=section,
+        ).info("Adds a Transparent Background accordion to the Extras tab to Inspyrenet Rembg."),
     )
 
     shared.opts.add_option(
