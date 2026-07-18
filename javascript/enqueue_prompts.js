@@ -34,7 +34,16 @@
         }
     }
 
+    function formEle(el) {
+        if (!el) return null;
+        var tag = el.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return el;
+        return el.querySelector('textarea, input, select');
+    }
+
     function setInputValue(el, value) {
+        el = formEle(el);
+        if (!el) return;
         var tag = el.tagName;
         if (tag === 'INPUT' && el.type === 'checkbox') {
             el.checked = value;
@@ -71,7 +80,7 @@
     function readSettings(tab) {
         var root = typeof gradioApp === 'function' ? gradioApp() : document;
         function getVal(id) {
-            var el = root.getElementById(tab + '_' + id);
+            var el = formEle(root.getElementById(tab + '_' + id));
             if (!el) return null;
             if (el.tagName === 'INPUT' && (el.type === 'checkbox' || el.type === 'radio')) return el.checked;
             if (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT' || el.tagName === 'SELECT') return el.value;
