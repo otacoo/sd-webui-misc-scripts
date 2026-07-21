@@ -57,7 +57,7 @@ def on_ui_settings():
             gr.Checkbox,
             {"interactive": True},
             section=section,
-        ).info("Adds a Transparent Background accordion to the Extras tab to Inspyrenet Rembg."),
+        ).info("Adds a Transparent Background accordion to the Extras tab (Inspyrenet Rembg / Lucida)."),
     )
 
     shared.opts.add_option(
