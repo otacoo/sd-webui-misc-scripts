@@ -12,7 +12,12 @@ Small extension containing various scripts to augment SD WebUI Forge.
 
 - **IMAGE DRAG & DROP** - Adds **drag-over (drag & drop)** handling so that when you drag a file over a tab button in the UI the tab will be opened (emulates a click on hover while dragging files). This makes it easier to drag an image onto the UI and drop it into the right tab, e.g. being in txt2img tab but wanting to drag an image into PNG Info.
 
-- **TRANSPARENT BACKGROUND** - Adds a **Transparent Background** entry to the Extras tab allowing removal of background from images. The [Inspyrenet Rembg](https://github.com/plemeri/transparent-background) model will be downloaded on first use.
+- **TRANSPARENT BACKGROUND** - Adds a **Transparent Background** entry to the Extras tab allowing removal of background from images.  
+  Supports two models:
+  - **[Inspyrenet Rembg](https://github.com/plemeri/transparent-background)** — downloaded from HuggingFace on first use.
+  - **[Lucida](https://github.com/egeorcun/lucida)** — BiRefNet-based fine-tune excelling at glass, camouflage, text, glow, and line art — downloaded from HuggingFace on first use.
+
+  Outputs are saved as `transparent_<timestamp>.webp` (or `.png`) and optionally `mask_<timestamp>.webp` (or `.png`) alongside the Extras result.
 
 ## SD WebUI Installation
 
