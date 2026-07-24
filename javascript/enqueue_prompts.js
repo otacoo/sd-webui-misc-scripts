@@ -66,13 +66,10 @@
 
     function getActiveTab() {
         var root = typeof gradioApp === 'function' ? gradioApp() : document;
-        var tabs = root.querySelectorAll('#tabs > .tab-nav button');
-        for (var i = 0; i < tabs.length; i++) {
-            if (tabs[i].classList.contains('selected')) {
-                var text = tabs[i].textContent.trim().toLowerCase();
-                if (text.indexOf('img2img') !== -1) return 'img2img';
-                if (text.indexOf('txt2img') !== -1) return 'txt2img';
-            }
+        var tabNames = ['txt2img', 'img2img'];
+        for (var i = 0; i < tabNames.length; i++) {
+            var div = root.getElementById('tab_' + tabNames[i]);
+            if (div && div.style.display !== 'none') return tabNames[i];
         }
         return 'txt2img';
     }
